@@ -6,7 +6,7 @@
     </head>
 
     <body style="margin:0;background-color:rgb(0,0,0)">
-        <canvas id="network" width="1920" height="1080" style="position:absolute;width:100vw;height:100vh"></canvas>
+        <canvas id="network" width="1920" height="1007" style="position:absolute;width:100vw;height:100vh"></canvas>
 
         <script>
             const req = new XMLHttpRequest();
@@ -53,10 +53,12 @@
                 const canvas = document.getElementById('network');
                 const ctx = canvas.getContext('2d');
 
-                ctx.beginPath();
-                ctx.arc(960, 540, 200, 0, 2 * Math.PI, false);
-                ctx.fillStyle = "blue";
-                ctx.fill();
+                for (let i = 0; i < 1000000000; i++) {
+                    ctx.beginPath();
+                    ctx.arc(960, 540, 50, 0, 2 * Math.PI);
+                    ctx.fillStyle = "blue";
+                    ctx.fill();
+                }
             }
             };
 
