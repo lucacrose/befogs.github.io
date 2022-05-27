@@ -14,52 +14,43 @@
             req.responseType = "arraybuffer";
 
             req.onload = function () {
-            const arrayBuffer = req.response;
-                
-            if (arrayBuffer) {
-                const byteArray = new Uint8Array(arrayBuffer);
-                const Friends = [[]]
-                let UserId = 1
-                let Parsing = true
-                
-                for (let i = 0; i < byteArray.byteLength; i++) {
-                let Id = byteArray.slice(i, i + 4)
-                    i += 3
+                const arrayBuffer = req.response;
+                    
+                if (arrayBuffer) {
+                    const byteArray = new Uint8Array(arrayBuffer);
+                    const Friends = [[]]
+                    let UserId = 1
+                    let Parsing = true
+                    
+                    for (let i = 0; i < byteArray.byteLength; i++) {
+                    let Id = byteArray.slice(i, i + 4)
+                        i += 3
 
-                    while (Id[0] == 255) {
-                        UserId += 1
-                        Friends.push([])
-
-                        if (i + 1 < byteArray.byteLength) {
+                        while (Id[0] == 255) {
+                            UserId += 1
+                            Friends.push([])
                             i += 1
 
-                            const c = new Uint8Array(4);
-                            c.set(Id.slice(1), 0);
-                            c.set(Uint8Array.of(byteArray[i]), 3);
+                            if (i < byteArray.byteLength) {
+                                const c = new Uint8Array(4);
+                                c.set(Id.slice(1), 0);
+                                c.set(Uint8Array.of(byteArray[i]), 3);
 
-                            Id = c
-                        } else {
-                            Parsing = false
-                            break
+                                Id = c
+                            } else {
+                                Parsing = false
+                                break
+                            }
+                        }
+
+                        if (Parsing) {
+                            let FriendId = Id[0] * 16777216  + Id[1] * 65536 + Id[2] * 256 + Id[3]
+                            Friends[UserId - 1].push(FriendId)
                         }
                     }
 
-                    if (Parsing) {
-                        let FriendId = Id[0] * 16777216  + Id[1] * 65536 + Id[2] * 256 + Id[3]
-                        Friends[UserId - 1].push(FriendId)
-                    }
+                    console.log(Friends)
                 }
-
-                const canvas = document.getElementById("network");
-                const ctx = canvas.getContext("2d");
-
-                for (let i = 0; i < 100; i++) {
-                    ctx.beginPath();
-                    ctx.arc(960, 540, 50, 0, 2 * Math.PI);
-                    ctx.fillStyle = "blue";
-                    ctx.fill();
-                }
-            }
             };
 
             req.send();
